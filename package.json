@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PSeitz/germansynoyms.git"
+    "url": "https://github.com/PSeitz/germansynonyms.git"
   },
   "keywords": [
     "german",
@@ -28,7 +28,7 @@
   "author": "Pascal Seitz",
   "license": "GNU LESSER GENERAL PUBLIC LICENSE",
   "bugs": {
-    "url": "https://github.com/PSeitz/germansynoyms/issues"
+    "url": "https://github.com/PSeitz/germansynonyms/issues"
   },
-  "homepage": "https://github.com/PSeitz/germansynoyms"
+  "homepage": "https://github.com/PSeitz/germansynonyms"
 }
