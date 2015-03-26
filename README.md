@@ -1,7 +1,10 @@
-# German synonyms
-uses openthesaurus and nodejs to find german synonyms
+# Find German Synonyms
+Ultra fast lookup for german synonyms. Uses binary search to find all synonyms or to check for synonymity. The underlying source is from openthesaurus https://www.openthesaurus.de/
 
-Ultra fast lookup for german synonyms. Uses binary search to find all synonyms or to check for synonymity.
+### Install
+
+npm install germansynonyms
+
 
 
 ## Usage
