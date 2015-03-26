@@ -1,9 +1,9 @@
-
+var path = require("path");
 var fs = require("fs");
 var service = {};
 service.convert = function() {
 
-    var thesaurus_raw = fs.readFileSync("openthesaurus.txt", "utf8");
+    var thesaurus_raw = fs.readFileSync(path.join(__dirname, "./openthesaurus.txt"), "utf8");
     var thesaurus = thesaurus_raw.split("\n");
 
     thesaurus.splice(0, 18); // comment
