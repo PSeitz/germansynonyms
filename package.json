@@ -1,0 +1,34 @@
+{
+  "name": "germansynonyms",
+  "version": "1.0.0",
+  "description": "nodejs module to find german synonyms with openthesaurus",
+  "main": "germansynonyms.js",
+  "scripts": {
+    "test": "mocha mochatest.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PSeitz/germansynoyms.git"
+  },
+  "keywords": [
+    "german",
+    "deutsch",
+    "synonym",
+    "synonyme",
+    "bedeutungsgleiches",
+    "wort",
+    "nodejs",
+    "openthesaurus",
+    "lookup",
+    "find",
+    "wordnet",
+    "nlp",
+    "nltk"
+  ],
+  "author": "Pascal Seitz",
+  "license": "GNU LESSER GENERAL PUBLIC LICENSE",
+  "bugs": {
+    "url": "https://github.com/PSeitz/germansynoyms/issues"
+  },
+  "homepage": "https://github.com/PSeitz/germansynoyms"
+}
