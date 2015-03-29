@@ -1,41 +1,19 @@
-
+console.time('Timer Title');
 var converter = require("./converter");
 var allWords = converter.convert();
+var path = require("path");
 
-function lowerBound(arr, ele)
-{
-    ele = ele.toLowerCase();
-    var mid;
-    var half;
-    var beginning = 0;
-    var len = arr.length;
+// var allWords = require(path.join(__dirname, "./allWords.json"));
 
-    while(len> 0)
-    {
-        half   = len>> 1;
-        mid = beginning;
-        mid += half;
-        if(ele.localeCompare(arr[mid].word) > 0)
-        {
-            beginning= mid;
-            ++beginning;
-            len-= (half+ 1);
-        }
-        else
-            len= half;
-    }
-    return beginning;
-}
+console.timeEnd('Timer Title');
 
 function getSynonymGroups(word){
     word = word.toLowerCase();
-    var lines = [];
-    var position = lowerBound(allWords, word);
-    while (allWords[position].word == word) {
-        lines.push(allWords[position].line);
-        position++;
+    if (allWords[word]) {
+        console.log(allWords[word]);
+        return allWords[word];
     }
-    return lines;
+    return undefined;
 }
 
 function getAllSynonyms(word){
@@ -50,6 +28,8 @@ function isSynonym(word1, word2){
     word1 = word1.toLowerCase();
     word2 = word2.toLowerCase();
     var lines = getSynonymGroups(word1);
+    if (!lines) 
+        return false;
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
         for (var j = 0; j < line.length; j++) {
@@ -61,6 +41,7 @@ function isSynonym(word1, word2){
 }
 
 var service = {};
+service.allWords = allWords;
 service.getSynonymGroups = getSynonymGroups;
 service.isSynonym = isSynonym;
 service.getAllSynonyms = getAllSynonyms;

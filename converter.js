@@ -1,7 +1,7 @@
 var path = require("path");
 var fs = require("fs");
 var service = {};
-service.convert = function() {
+service.convert = function(writeFile) {
 
     var thesaurus_raw = fs.readFileSync(path.join(__dirname, "./openthesaurus.txt"), "utf8");
     var thesaurus = thesaurus_raw.split("\n");
@@ -12,28 +12,28 @@ service.convert = function() {
         thesaurus[i] = thesaurus[i].split(";");
     }
 
-    var allWords = [];
+    var allWords = {};
     for (i = 0; i < thesaurus.length; i++) {
         var line = thesaurus[i];
         for (var j = 0; j < line.length; j++) {
-            line[j] = line[j].replace(/ *\([^)]*\) */g, "");
+            line[j] = line[j].replace(/ *\([^)]*\) */g, ""); //remove things between parentheses
             line[j] = line[j].trim();
             line[j] = line[j].toLowerCase();
-            allWords.push({
-                word: line[j],
-                line: line
-            });
+            if (!allWords[line[j]]) {
+                allWords[line[j]] = [];
+            }
+            allWords[line[j]].push(line);
         }
     }
-
-    
-
-    allWords.sort(function(a, b) {
-        return a.word.localeCompare(b.word);
-    });
-
+    if (writeFile) {
+        fs.writeFile(path.join(__dirname, "./allWords.json"), JSON.stringify(allWords), function(err) {
+            if(err) {
+                return console.log(err);
+            }
+            console.log("The file was saved!");
+        }); 
+    }
     return allWords;
-
 
 };
 
