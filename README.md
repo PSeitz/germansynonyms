@@ -1,5 +1,5 @@
 # Find German Synonyms
-Ultra fast lookup for german synonyms. Uses binary search to find all synonyms or to check for synonymity. The underlying source is from openthesaurus https://www.openthesaurus.de/
+Ultra fast lookup for german synonyms. The underlying data is from openthesaurus https://www.openthesaurus.de/
 
 ### Install
 
