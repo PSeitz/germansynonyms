@@ -1,28 +1,43 @@
 var assert = require("assert");
-var expect = require('chai').expect;
+var chai = require('chai');
+var chaiAsPromised = require("chai-as-promised");
+chai.use(chaiAsPromised);
+var expect = chai.expect;
 var syn = require("./germansynonyms.js");
 
 describe('germansynonyms service', function() {
 
-	it('should report Liegeplatz and Ankerplatz as synonym ', function() {
-		expect(syn.isSynonym("Liegeplatz", "Ankerplatz")).to.be.true;
-	});
+    it('should report Liegeplatz and Ankerplatz as synonym ', function() {
+        return expect(syn.isSynonym("Liegeplatz", "Ankerplatz")).to.eventually.be.true;
 
-	it('should report Giebeldach and Atemwurzel not as synonym ', function() {
-		expect(syn.isSynonym("Giebeldach", "Atemwurzel")).not.to.be.true;
-	});
+    });
 
-	it('should contain einschalten in the anschalten synonym list', function() {
-		var synonyms = syn.getAllSynonyms("anschalten");
-		expect(synonyms).to.contain('einschalten');
-	});
+    it('should report Ankerplatz and Liegeplatz as synonym ', function() {
+        return expect(syn.isSynonym("Ankerplatz", "Liegeplatz")).to.eventually.be.true;
+    });
 
-	it('should handle words not in list', function() {
-		var synonyms = syn.isSynonym('blablubb', 'einschalten');
-		expect(synonyms).to.be.false;
+    it('should report Giebeldach and Atemwurzel not as synonym ', function() {
+        return expect(syn.isSynonym("Giebeldach", "Atemwurzel")).not.to.eventually.be.true;
+    });
 
-		var allSynonyms = syn.getAllSynonyms('blablubb');
-		expect(allSynonyms).to.be.empty;
-	});
+    it('should contain einschalten in the anschalten synonym list', function() {
+        return expect(syn.getAllSynonyms("anschalten")).to.eventually.contain('einschalten')
+    });
+
+    it('should handle words not in list', function() {
+        return expect(syn.isSynonym('blablubb', 'einschalten')).to.eventually.be.false
+    });
+
+    it('should handle words not in list 2', function() {
+        return expect(syn.getAllSynonyms('blablubb')).to.eventually.be.empty;
+    });
+
+    it('should return a random synonym', function(done) {
+        syn.getRandomSynonym("anschalten").then(function(synonym){
+            console.log("anschalten:"+synonym);
+            done();
+        });
+        
+    });
 
 });

@@ -1,49 +1,57 @@
-console.time('Timer Title');
-var converter = require("./converter");
-var allWords = converter.convert();
-var path = require("path");
+var fs = require('fs');
+var Promise = require("bluebird");
 
-// var allWords = require(path.join(__dirname, "./allWords.json"));
+var sqlite3 = require('sqlite3');
+var _ = require('lodash');
 
-console.timeEnd('Timer Title');
+var db = new sqlite3.Database('germ_syn.sqlite', sqlite3.OPEN_READONLY, function (err) {
+    if(err) throw err;
+});
 
-function getSynonymGroups(word){
-    word = word.toLowerCase();
-    if (allWords[word]) {
-        console.log(allWords[word]);
-        return allWords[word];
-    }
-    return undefined;
+var dbPromise = Promise.promisifyAll(db);
+
+function createDb(overwrite){
+    var exists = fs.existsSync('germ_syn.sqlite');
+    if (overwrite || !exists)
+        require("./create_sqlite");
 }
 
+var query = "SELECT word2 FROM mapping WHERE word1 = ?";
+var stmt = db.prepare(query);
+var stmtPromise = Promise.promisifyAll(stmt);
+var args = new Array(1);
 function getAllSynonyms(word){
-    word = word.toLowerCase();
-    var lines = getSynonymGroups(word);
-    var merged = [];
-    merged = merged.concat.apply(merged, lines);
-    return merged;
+    args[0] = word;
+    return stmtPromise.allAsync(args).then(function(result) {
+        return _.pluck(result, 'word2');
+    }).catch(function(e) {
+        console.log("Error in query", e);
+    });
+}
+
+function getRandomSynonym(word){
+    return getAllSynonyms(word).then(function(result) {
+        return _.sample(result);
+    });
 }
 
 function isSynonym(word1, word2){
-    word1 = word1.toLowerCase();
-    word2 = word2.toLowerCase();
-    var lines = getSynonymGroups(word1);
-    if (!lines) 
-        return false;
-    for (var i = 0; i < lines.length; i++) {
-        var line = lines[i];
-        for (var j = 0; j < line.length; j++) {
-            var lineWord = line[j];
-            if(lineWord == word2) return true;
+
+    return getAllSynonyms(word1).then(function (words) {
+        if (!words) return false;
+        for (var i = 0; i < words.length; i++) {
+            var word = words[i];
+            if(word.toLowerCase() == word2.toLowerCase()) return true;
         }
-    }
-    return false;
+        return false;
+    })
+
 }
 
 var service = {};
-service.allWords = allWords;
-service.getSynonymGroups = getSynonymGroups;
+service.createDb = createDb;
 service.isSynonym = isSynonym;
 service.getAllSynonyms = getAllSynonyms;
+service.getRandomSynonym= getRandomSynonym;
 
 module.exports = service;
