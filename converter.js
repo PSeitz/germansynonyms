@@ -1,8 +1,8 @@
 var path = require("path");
 var fs = require("fs");
 var service = {};
-service.convert = function(opt) {
-
+service.convert = function(options) {
+    var opt = options || "";
     var thesaurus_raw = fs.readFileSync(path.join(__dirname, opt.smallversion? "./german.syn": "./openthesaurus.txt" ), "utf8");
     thesaurus = thesaurus_raw.split("\n");
     thesaurus.splice(0, 18); // comment

@@ -1,15 +1,16 @@
 var fs = require('fs');
 var Promise = require("bluebird");
-
+var path = require('path');
 var sqlite3 = require('sqlite3');
 var _ = require('lodash');
 
 var stmtPromise;
 var query = "SELECT word2 FROM mapping WHERE word1 = ?";
+var dbPath = path.resolve(__dirname, './germ_syn.sqlite');
 
 function openDb(){
     if (stmtPromise) return;
-    var db = new sqlite3.Database('germ_syn.sqlite', sqlite3.OPEN_READONLY, function (err) {
+    var db = new sqlite3.Database(dbPath, sqlite3.OPEN_READONLY, function (err) {
         if(err) throw err;
     });
     var dbPromise = Promise.promisifyAll(db);
@@ -18,7 +19,7 @@ function openDb(){
 }
 
 function createDb(overwrite){
-    var exists = fs.existsSync('germ_syn.sqlite');
+    var exists = fs.existsSync(dbPath);
     if (overwrite || !exists)
         require("./create_sqlite");
 }
@@ -53,13 +54,16 @@ function getRandomSynonyms(wordos){
 }
 
 function getRandomSynonymSentence(sentence){
-    var wordsArr = sentence.split(/[\s,.]+/)
-    return getRandomSynonyms(wordsArr).then(function (result) {
-        for (var i = 0; i < wordsArr.length; i++) {
-            var word = wordsArr[i];
-            sentence.replace(word, result[i]);
+    var resultSentence = sentence;
+    var regex = /(\w|ä|ü|ö|ß)+/g;
+    var match = sentence.match(regex);
+    var origMatch = sentence.match(regex);
+    return getRandomSynonyms(match).then(function (result) {
+        for (var i = 0; i < origMatch.length; i++) {
+            var word = origMatch[i];
+            resultSentence = resultSentence.replace(word, result[i]);
         }
-        return sentence;
+        return resultSentence;
     })
 
 }

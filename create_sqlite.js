@@ -1,34 +1,19 @@
 var sqlite3 = require('sqlite3');
-
+var path = require("path");
 var converter = require("./converter");
 var allWords = converter.convert({smallversion:true});
 var _ = require('lodash');
 
-var db = new sqlite3.Database('germ_syn.sqlite');
+var db = new sqlite3.Database(path.resolve(__dirname, './germ_syn.sqlite'));
 db.serialize(function() {
 
     db.run("DROP TABLE IF EXISTS entries");
     db.run("DROP TABLE IF EXISTS connections");
     db.run("DROP TABLE IF EXISTS mapping");
 
-    // db.run("CREATE TABLE entries (id INTEGER PRIMARY KEY, word TEXT NOT NULL UNIQUE collate nocase)");
-
-    // db.run("CREATE TABLE connections (id1 INTEGER, id2 INTEGER)");
-
     db.run("CREATE TABLE mapping (word1 TEXT NOT NULL collate nocase, word2 TEXT NOT NULL collate nocase, PRIMARY KEY (word1, word2))");
 
     db.run("CREATE INDEX mapping_index ON mapping(word1, word2)");
-
-    // var allUniqWords =_.uniq(_.flatten(_.map(allWords), true));
-
-    // console.log(allUniqWords[150]);
-    // console.log(allWords.length);
-    // console.log(allUniqWords.length);
-
-    // insert(db, { table: "entries", data: allUniqWords, tablefields:["word"]});
-
-    // insert(db, { table: "connections", data: allUniqWords, tablefields:["word"]});
-
 
     db.run("BEGIN TRANSACTION");
     for(var prop in allWords){
@@ -42,27 +27,6 @@ db.serialize(function() {
         }
     }
     db.run("END");
-
-    // insert(db, {
-    //     table: "kanji_conjugations",
-    //     tablefields: ["_id", "kanji_id", "form"],
-    //     data: data.getAllKanjiWithConjugations(),
-    //     properties: ["stem", "form"],
-    //     fk: {
-    //         "stem": {
-    //             table: "kanjis",
-    //             field: "_id",
-    //             value: "kanji"
-    //         }
-    //     }
-    // });
-
-
-    // for (var i = 0; i < allUniqWords.length; i++) {
-    //     var allUniqWords = allUniqWords[i];
-
-    //     db.run("INSERT ", argumentos);
-    // }
 
 
 });
