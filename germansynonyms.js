@@ -35,6 +35,27 @@ function getRandomSynonym(word){
     });
 }
 
+function getRandomSynonyms(wordos){
+    var words = wordos;
+
+    return Promise.reduce(wordos, function(worders, word, index) {
+        return getRandomSynonym(word).then(function(result) {
+            words[index] = result?result:word;
+            return words;
+        });
+    }, 0);
+
+}
+
+function getRandomSynonymSentence(sentence){
+    var wordsArr = sentence.split(" ");
+    return getRandomSynonyms(wordsArr).then(function (result) {
+        return result.join(" ");
+    })
+
+}
+
+
 function isSynonym(word1, word2){
 
     return getAllSynonyms(word1).then(function (words) {
@@ -53,5 +74,6 @@ service.createDb = createDb;
 service.isSynonym = isSynonym;
 service.getAllSynonyms = getAllSynonyms;
 service.getRandomSynonym= getRandomSynonym;
-
+service.getRandomSynonyms= getRandomSynonyms;
+service.getRandomSynonymSentence= getRandomSynonymSentence;
 module.exports = service;
