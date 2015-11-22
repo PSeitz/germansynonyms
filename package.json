@@ -1,6 +1,6 @@
 {
   "name": "germansynonyms",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "nodejs module to find german synonyms with openthesaurus",
   "main": "germansynonyms.js",
   "scripts": {

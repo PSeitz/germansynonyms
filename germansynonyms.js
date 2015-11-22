@@ -4,11 +4,18 @@ var Promise = require("bluebird");
 var sqlite3 = require('sqlite3');
 var _ = require('lodash');
 
-var db = new sqlite3.Database('germ_syn.sqlite', sqlite3.OPEN_READONLY, function (err) {
-    if(err) throw err;
-});
+var stmtPromise;
+var query = "SELECT word2 FROM mapping WHERE word1 = ?";
 
-var dbPromise = Promise.promisifyAll(db);
+function openDb(){
+    if (stmtPromise) return;
+    var db = new sqlite3.Database('germ_syn.sqlite', sqlite3.OPEN_READONLY, function (err) {
+        if(err) throw err;
+    });
+    var dbPromise = Promise.promisifyAll(db);
+    var stmt = db.prepare(query);
+    stmtPromise = Promise.promisifyAll(stmt);
+}
 
 function createDb(overwrite){
     var exists = fs.existsSync('germ_syn.sqlite');
@@ -16,11 +23,9 @@ function createDb(overwrite){
         require("./create_sqlite");
 }
 
-var query = "SELECT word2 FROM mapping WHERE word1 = ?";
-var stmt = db.prepare(query);
-var stmtPromise = Promise.promisifyAll(stmt);
 var args = new Array(1);
 function getAllSynonyms(word){
+    openDb();
     args[0] = word;
     return stmtPromise.allAsync(args).then(function(result) {
         return _.pluck(result, 'word2');
