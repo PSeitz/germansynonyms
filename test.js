@@ -10,7 +10,7 @@ syn.getRandomSynonyms(["Das", "ist", "ein", "Test", "anschalten"]).then(function
 
 
 
-syn.getRandomSynonymSentence("Nett , schöne Funktion . Das mögen ich gut.").then(function(result){
+syn.getRandomSynonymSentence("Nett, schöne Funktion. Das mögen ich gut.").then(function(result){
     console.log(result);
 });
 

@@ -48,9 +48,13 @@ function getRandomSynonyms(wordos){
 }
 
 function getRandomSynonymSentence(sentence){
-    var wordsArr = sentence.split(" ");
+    var wordsArr = sentence.split(/[\s,.]+/)
     return getRandomSynonyms(wordsArr).then(function (result) {
-        return result.join(" ");
+        for (var i = 0; i < wordsArr.length; i++) {
+            var word = wordsArr[i];
+            sentence.replace(word, result[i]);
+        }
+        return sentence;
     })
 
 }
